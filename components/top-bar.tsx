@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState, useEffect, useCallback } from "react";
 import { useSeatingStore } from "@/lib/store";
 import {
   Plus,
@@ -31,17 +31,32 @@ export function TopBar() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const rosterInputRef = useRef<HTMLInputElement>(null);
 
-  const handleAddTables = () => {
-    const countStr = prompt("How many tables?");
-    if (!countStr) return;
-    const count = parseInt(countStr);
-    if (isNaN(count) || count < 1) return;
-    const sizeStr = prompt("How many seats per table? (2-6)");
-    if (!sizeStr) return;
-    const size = parseInt(sizeStr);
-    if (isNaN(size) || size < 2 || size > 6) return;
-    addTables(count, size);
+  const [showAddDialog, setShowAddDialog] = useState(false);
+  const [tableCount, setTableCount] = useState(1);
+  const [seatSize, setSeatSize] = useState(5);
+
+  const openAddDialog = () => {
+    setTableCount(1);
+    setSeatSize(5);
+    setShowAddDialog(true);
   };
+
+  const confirmAddTables = useCallback(() => {
+    if (tableCount >= 1 && seatSize >= 2 && seatSize <= 6) {
+      addTables(tableCount, seatSize);
+      setShowAddDialog(false);
+    }
+  }, [tableCount, seatSize, addTables]);
+
+  useEffect(() => {
+    if (!showAddDialog) return;
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setShowAddDialog(false);
+      if (e.key === "Enter") confirmAddTables();
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [showAddDialog, confirmAddTables]);
 
   const handleResetRoster = () => {
     rosterInputRef.current?.click();
@@ -107,7 +122,7 @@ export function TopBar() {
       <div className="h-5 w-px bg-border mx-1" />
 
       <button
-        onClick={handleAddTables}
+        onClick={openAddDialog}
         className="flex items-center gap-1.5 rounded-md bg-primary px-2.5 py-1.5 text-xs font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
         title="Add tables"
       >
@@ -195,6 +210,61 @@ export function TopBar() {
         className="hidden"
         onChange={handleRosterFileChange}
       />
+
+      {showAddDialog && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+          onClick={() => setShowAddDialog(false)}
+        >
+          <div
+            className="bg-card text-card-foreground border border-border rounded-lg shadow-lg p-5 w-[320px]"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3 className="text-sm font-semibold mb-4">Add Tables</h3>
+            <div className="flex items-center gap-2 text-sm">
+              <span>Add</span>
+              <input
+                type="number"
+                min={1}
+                max={50}
+                value={tableCount}
+                onChange={(e) =>
+                  setTableCount(Math.max(1, parseInt(e.target.value) || 1))
+                }
+                className="w-14 rounded-md border border-border bg-background px-2 py-1 text-sm text-foreground text-center focus:outline-none focus:ring-1 focus:ring-ring"
+                autoFocus
+              />
+              <span>{"table(s) of size"}</span>
+              <input
+                type="number"
+                min={2}
+                max={6}
+                value={seatSize}
+                onChange={(e) =>
+                  setSeatSize(
+                    Math.min(6, Math.max(2, parseInt(e.target.value) || 2))
+                  )
+                }
+                className="w-14 rounded-md border border-border bg-background px-2 py-1 text-sm text-foreground text-center focus:outline-none focus:ring-1 focus:ring-ring"
+              />
+            </div>
+            <div className="flex justify-end gap-2 mt-5">
+              <button
+                onClick={() => setShowAddDialog(false)}
+                className="rounded-md bg-secondary px-3 py-1.5 text-xs font-medium text-secondary-foreground hover:bg-secondary/80 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmAddTables}
+                className="rounded-md bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
+              >
+                Add
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
