@@ -5,7 +5,7 @@ import { useSeatingStore } from "@/lib/store";
 import type { Table, Seat } from "@/lib/types";
 
 const SEAT_W = 72;
-const SEAT_H = 36;
+const SEAT_H = 64;
 const SEAT_GAP = 6;
 const TABLE_PADDING_X = 10;
 const TABLE_PADDING_Y = 4;
@@ -183,16 +183,45 @@ function drawTable(
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
 
-      // Truncate text
-      let displayText = label;
       const maxWidth = SEAT_W - 8;
-      if (ctx.measureText(displayText).width > maxWidth) {
-        while (displayText.length > 1 && ctx.measureText(displayText + "...").width > maxWidth) {
-          displayText = displayText.slice(0, -1);
+      const lineHeight = 13;
+      const maxLines = Math.floor((SEAT_H - 10) / lineHeight);
+
+      // Word wrap
+      const words = label.split(/\s+/);
+      const lines: string[] = [];
+      let currentLine = "";
+      for (const word of words) {
+        const testLine = currentLine ? currentLine + " " + word : word;
+        if (ctx.measureText(testLine).width > maxWidth && currentLine) {
+          lines.push(currentLine);
+          currentLine = word;
+        } else {
+          currentLine = testLine;
         }
-        displayText += "...";
       }
-      ctx.fillText(displayText, sx + SEAT_W / 2, sy + SEAT_H / 2);
+      if (currentLine) lines.push(currentLine);
+
+      // Clamp to maxLines and truncate last line if needed
+      const clipped = lines.length > maxLines;
+      const displayLines = lines.slice(0, maxLines);
+      const lastIdx = displayLines.length - 1;
+      if (lastIdx >= 0) {
+        let last = displayLines[lastIdx];
+        if (clipped || ctx.measureText(last).width > maxWidth) {
+          while (last.length > 1 && ctx.measureText(last + "…").width > maxWidth) {
+            last = last.slice(0, -1);
+          }
+          displayLines[lastIdx] = last + "…";
+        }
+      }
+
+      // Render lines centered vertically in seat
+      const totalH = displayLines.length * lineHeight;
+      const startY = sy + (SEAT_H - totalH) / 2 + lineHeight / 2;
+      for (let li = 0; li < displayLines.length; li++) {
+        ctx.fillText(displayLines[li], sx + SEAT_W / 2, startY + li * lineHeight);
+      }
     }
 
     // Lock indicator - lock icon
