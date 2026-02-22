@@ -344,9 +344,9 @@ export const useSeatingStore = create<SeatingChartStore>((set, get) => ({
     const unseatedOrUnlockedStudents = state.students.filter(
       (s) => !lockedStudentIds.has(s.id)
     );
-    if (unlockedSeatCount !== unseatedOrUnlockedStudents.length) {
+    if (unlockedSeatCount < unseatedOrUnlockedStudents.length) {
       alert(
-        `Cannot randomize: ${unseatedOrUnlockedStudents.length} students need ${unlockedSeatCount} unlocked seats (must be equal).`
+        `Not enough open seats: You have ${unseatedOrUnlockedStudents.length} students and ${unlockedSeatCount} unlocked seats.`
       );
       return;
     }
@@ -420,26 +420,42 @@ export const useSeatingStore = create<SeatingChartStore>((set, get) => ({
       let bestTable: Table | undefined;
       let bestAvailable: Seat[] = [];
 
-      // First try to find a table that fits all
+      // First try to find all tables that fit all members, then pick a random one
+      const tablesWithEnoughSeats: { table: Table; available: Seat[] }[] = [];
       for (const t of tables) {
         const avail = getAvailableSeats(t);
         if (avail.length >= unseatedMembers.length) {
-          bestTable = t;
-          bestAvailable = avail;
-          break;
+          tablesWithEnoughSeats.push({ table: t, available: avail });
         }
       }
 
-      // Otherwise pick the table with the most available seats
-      if (!bestTable) {
+      if (tablesWithEnoughSeats.length > 0) {
+        // Pick a random table
+        const randomIndex = Math.floor(Math.random() * tablesWithEnoughSeats.length);
+        const chosen = tablesWithEnoughSeats[randomIndex];
+        bestTable = chosen.table;
+        bestAvailable = chosen.available;
+      } else {
+        // Otherwise pick a random table with the most available seats
         let maxAvail = 0;
+        const tablesWithMostSeats: { table: Table; available: Seat[] }[] = [];
+
         for (const t of tables) {
           const avail = getAvailableSeats(t);
           if (avail.length > maxAvail) {
             maxAvail = avail.length;
-            bestTable = t;
-            bestAvailable = avail;
+            tablesWithMostSeats.length = 0;
+            tablesWithMostSeats.push({ table: t, available: avail });
+          } else if (avail.length === maxAvail && maxAvail > 0) {
+            tablesWithMostSeats.push({ table: t, available: avail });
           }
+        }
+
+        if (tablesWithMostSeats.length > 0) {
+          const randomIndex = Math.floor(Math.random() * tablesWithMostSeats.length);
+          const chosen = tablesWithMostSeats[randomIndex];
+          bestTable = chosen.table;
+          bestAvailable = chosen.available;
         }
       }
 
