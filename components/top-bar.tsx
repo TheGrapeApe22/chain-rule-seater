@@ -29,6 +29,7 @@ export function TopBar() {
   } = useSeatingStore();
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const rosterInputRef = useRef<HTMLInputElement>(null);
 
   const handleAddTables = () => {
     const countStr = prompt("How many tables?");
@@ -43,15 +44,25 @@ export function TopBar() {
   };
 
   const handleResetRoster = () => {
-    const text = prompt(
-      "Paste a roster (one student per line), or leave empty to clear:"
-    );
-    if (text === null) return;
-    resetRoster();
-    if (text.trim().length > 0) {
-      const names = text.split("\n").filter((n) => n.trim().length > 0);
-      addStudentsFromRoster(names);
-    }
+    rosterInputRef.current?.click();
+  };
+
+  const handleRosterFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const text = ev.target?.result;
+      if (typeof text === "string") {
+        resetRoster();
+        const names = text.split("\n").filter((n) => n.trim().length > 0);
+        if (names.length > 0) {
+          addStudentsFromRoster(names);
+        }
+      }
+    };
+    reader.readAsText(file);
+    e.target.value = "";
   };
 
   const handleSave = () => {
@@ -175,6 +186,14 @@ export function TopBar() {
         accept=".json"
         className="hidden"
         onChange={handleFileChange}
+      />
+
+      <input
+        ref={rosterInputRef}
+        type="file"
+        accept=".txt,.csv,.text"
+        className="hidden"
+        onChange={handleRosterFileChange}
       />
     </div>
   );
