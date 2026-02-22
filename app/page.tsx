@@ -1,16 +1,8 @@
 "use client";
 
-import dynamic from "next/dynamic";
 import { TopBar } from "@/components/top-bar";
 import { RightSidebar } from "@/components/right-sidebar";
-
-const SeatingCanvas = dynamic(
-  () =>
-    import("@/components/seating-canvas").then((mod) => ({
-      default: mod.SeatingCanvas,
-    })),
-  { ssr: false }
-);
+import { SeatingCanvas } from "@/components/seating-canvas";
 
 export default function Home() {
   return (
