@@ -400,6 +400,12 @@ export const useSeatingStore = create<SeatingChartStore>((set, get) => ({
       );
       const availableSeats = getAvailableSeats(targetTable);
 
+      // Shuffle the available seats
+      for (let i = availableSeats.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [availableSeats[i], availableSeats[j]] = [availableSeats[j], availableSeats[i]];
+      }
+
       const toSeat = unseatedMembers.slice(0, availableSeats.length);
       toSeat.forEach((sid, i) => {
         availableSeats[i].studentId = sid;
@@ -460,6 +466,12 @@ export const useSeatingStore = create<SeatingChartStore>((set, get) => ({
       }
 
       if (!bestTable) continue;
+
+      // Shuffle the available seats within the chosen table
+      for (let i = bestAvailable.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [bestAvailable[i], bestAvailable[j]] = [bestAvailable[j], bestAvailable[i]];
+      }
 
       const toSeat = unseatedMembers.slice(0, bestAvailable.length);
       toSeat.forEach((sid, i) => {
