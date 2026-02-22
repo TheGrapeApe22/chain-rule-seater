@@ -139,7 +139,7 @@ function drawTable(
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
   ctx.fillText(
-    table.id.replace("table-", "T"),
+    table.name,
     table.x + w / 2,
     innerY + TABLE_INNER_H / 2
   );
@@ -252,6 +252,7 @@ export function SeatingCanvas() {
     unlockTableSeats,
     removeTable,
     setTableCapacity,
+    renameTable,
     getStudentById,
   } = useSeatingStore();
 
@@ -621,6 +622,14 @@ export function SeatingCanvas() {
         }
         break;
       }
+      case "rename": {
+        const table = tablesRef.current.find((t) => t.id === tableId);
+        const input = prompt("New table name:", table?.name || "");
+        if (input && input.trim()) {
+          renameTable(tableId, input.trim());
+        }
+        break;
+      }
     }
     setContextMenu(null);
   };
@@ -742,6 +751,12 @@ export function SeatingCanvas() {
             Unlock all seats
           </button>
           <div className="h-px bg-border my-1" />
+          <button
+            className="w-full text-left px-3 py-1.5 hover:bg-accent text-popover-foreground transition-colors"
+            onClick={() => handleContextAction("rename", contextMenu.tableId)}
+          >
+            Rename table
+          </button>
           <button
             className="w-full text-left px-3 py-1.5 hover:bg-accent text-popover-foreground transition-colors"
             onClick={() => handleContextAction("capacity", contextMenu.tableId)}

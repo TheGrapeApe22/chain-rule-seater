@@ -44,6 +44,7 @@ interface SeatingChartStore extends ChartState {
   removeTable: (tableId: string) => void;
   moveTable: (tableId: string, x: number, y: number) => void;
   setTableCapacity: (tableId: string, newCapacity: number) => void;
+  renameTable: (tableId: string, newName: string) => void;
 
   // Seats
   toggleSeatLock: (seatId: string) => void;
@@ -115,13 +116,17 @@ export const useSeatingStore = create<SeatingChartStore>((set, get) => ({
   },
 
   addTables: (count, capacity) => {
-    const newTables: Table[] = Array.from({ length: count }, (_, i) => ({
-      id: generateTableId(),
-      capacity,
-      seats: createSeats(capacity),
-      x: 100 + (i % 5) * 220,
-      y: 100 + Math.floor(i / 5) * 180,
-    }));
+    const newTables: Table[] = Array.from({ length: count }, (_, i) => {
+      const id = generateTableId();
+      return {
+        id,
+        name: id.replace("table-", "T"),
+        capacity,
+        seats: createSeats(capacity),
+        x: 100 + (i % 5) * 220,
+        y: 100 + Math.floor(i / 5) * 180,
+      };
+    });
     set((state) => ({ tables: [...state.tables, ...newTables] }));
   },
 
@@ -153,6 +158,14 @@ export const useSeatingStore = create<SeatingChartStore>((set, get) => ({
           return { ...t, capacity: clamped, seats: t.seats.slice(0, clamped) };
         }
       }),
+    }));
+  },
+
+  renameTable: (tableId, newName) => {
+    set((state) => ({
+      tables: state.tables.map((t) =>
+        t.id === tableId ? { ...t, name: newName } : t
+      ),
     }));
   },
 
