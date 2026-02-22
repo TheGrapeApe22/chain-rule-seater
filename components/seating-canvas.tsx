@@ -195,11 +195,27 @@ function drawTable(
       ctx.fillText(displayText, sx + SEAT_W / 2, sy + SEAT_H / 2);
     }
 
-    // Lock indicator
+    // Lock indicator - lock icon
     if (seat.locked) {
-      roundRect(ctx, sx + SEAT_W - 10, sy + 2, 8, 8, 2);
+      const lockW = 6;   // body width
+      const lockH = 5;   // body height (excludes shackle arc above)
+      const shackleR = 2; // radius of the shackle arc
+
+      const lx = sx + SEAT_W - lockW - 2;
+      const ly = sy + 3;
+
+      // Body
+      roundRect(ctx, lx, ly + shackleR, lockW, lockH, 1);
       ctx.fillStyle = "#f59e0b";
       ctx.fill();
+
+      // Shackle arc
+      ctx.beginPath();
+      ctx.arc(lx + lockW / 2, ly + shackleR, shackleR, Math.PI, 0);
+      ctx.strokeStyle = "#f59e0b";
+      ctx.lineWidth = 1.25;
+      ctx.lineCap = "round";
+      ctx.stroke();
     }
   }
 }
