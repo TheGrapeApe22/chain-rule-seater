@@ -346,7 +346,7 @@ export const useSeatingStore = create<SeatingChartStore>((set, get) => ({
     );
     if (unlockedSeatCount < unseatedOrUnlockedStudents.length) {
       alert(
-        `Not enough open seats: You have ${unseatedOrUnlockedStudents.length} students and ${unlockedSeatCount} unlocked seats.`
+        `Not enough open seats: You have ${unseatedOrUnlockedStudents.length} unlocked/unseated students and ${unlockedSeatCount} unlocked seats.`
       );
       return;
     }
