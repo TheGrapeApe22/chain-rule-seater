@@ -31,19 +31,24 @@ export function TopBar() {
   const rosterInputRef = useRef<HTMLInputElement>(null);
 
   const [showAddDialog, setShowAddDialog] = useState(false);
-  const [tableCount, setTableCount] = useState(1);
-  const [seatSize, setSeatSize] = useState(5);
+  const [tableCount, setTableCount] = useState("1");
+  const [seatSize, setSeatSize] = useState("5");
 
   const openAddDialog = () => {
-    setTableCount(1);
-    setSeatSize(5);
+    setTableCount("1");
+    setSeatSize("5");
     setShowAddDialog(true);
   };
 
   const confirmAddTables = useCallback(() => {
-    if (tableCount >= 1 && seatSize >= 2 && seatSize <= 6) {
-      addTables(tableCount, seatSize);
+    const count = parseInt(tableCount);
+    const size = parseInt(seatSize);
+    if (count >= 1 && count <= 50 && size >= 2 && size <= 6) {
+      addTables(count, size);
       setShowAddDialog(false);
+    }
+    else {
+      alert("Please enter valid numbers: at least 1 table (max 50), and seat size between 2 and 6.");
     }
   }, [tableCount, seatSize, addTables]);
 
@@ -195,9 +200,7 @@ export function TopBar() {
                 min={1}
                 max={50}
                 value={tableCount}
-                onChange={(e) =>
-                  setTableCount(Math.max(1, parseInt(e.target.value) || 1))
-                }
+                onChange={(e) => setTableCount(e.target.value)}
                 className={s.dialogInput}
                 autoFocus
               />
@@ -207,11 +210,7 @@ export function TopBar() {
                 min={2}
                 max={6}
                 value={seatSize}
-                onChange={(e) =>
-                  setSeatSize(
-                    Math.min(6, Math.max(2, parseInt(e.target.value) || 2))
-                  )
-                }
+                onChange={(e) => setSeatSize(e.target.value)}
                 className={s.dialogInput}
               />
             </div>

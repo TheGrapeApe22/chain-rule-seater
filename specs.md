@@ -5,8 +5,7 @@ An app that can display and edit a seating chart for a class of students.
 * right bar, showing the list of friend groups and the full list of students (both collapsible, and having unlimited height when uncollapsed). use colored highlighting to indicate the students' state (at a locked seat, at an unlocked seat, or unseated)
 * top bar (see features section below)
 ### top level attributes:
-* name
-* teacher
+* class name
 * list of students (initialized by a roster text file)
 * list of tables
 * list of friend groups
