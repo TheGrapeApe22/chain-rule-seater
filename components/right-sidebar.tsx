@@ -10,6 +10,7 @@ import {
   User,
   GripVertical,
 } from "@/components/icons";
+import s from "./right-sidebar.module.css";
 
 export function RightSidebar() {
   const {
@@ -56,19 +57,13 @@ export function RightSidebar() {
   // Student status helper
   const getStudentStatus = (studentId: string): "locked" | "seated" | "unseated" => {
     for (const t of tables) {
-      for (const s of t.seats) {
-        if (s.studentId === studentId) {
-          return s.locked ? "locked" : "seated";
+      for (const seat of t.seats) {
+        if (seat.studentId === studentId) {
+          return seat.locked ? "locked" : "seated";
         }
       }
     }
     return "unseated";
-  };
-
-  const statusColors = {
-    locked: "bg-amber-100 text-amber-800 border-amber-300",
-    seated: "bg-emerald-100 text-emerald-800 border-emerald-300",
-    unseated: "bg-background text-foreground border-border",
   };
 
   const handleStartEdit = (studentId: string, currentName: string) => {
@@ -90,43 +85,43 @@ export function RightSidebar() {
   };
 
   return (
-    <div className="flex shrink-0" style={{ width: sidebarWidth }}>
+    <div className={s.wrapper} style={{ width: sidebarWidth }}>
       {/* Resize handle */}
       <div
-        className="w-1.5 cursor-col-resize bg-border hover:bg-ring transition-colors shrink-0"
+        className={s.resizeHandle}
         onMouseDown={handleResizeStart}
       />
 
-      <div className="flex-1 flex flex-col overflow-hidden bg-card border-l border-border">
+      <div className={s.panel}>
         {/* Friend Groups */}
-        <div className="flex flex-col">
+        <div>
           <button
             onClick={() => setFriendGroupsOpen(!friendGroupsOpen)}
-            className="flex items-center gap-2 px-3 py-2.5 text-sm font-semibold hover:bg-accent transition-colors text-left"
+            className={s.sectionToggle}
           >
             {friendGroupsOpen ? (
-              <ChevronDown className="h-4 w-4 shrink-0" />
+              <ChevronDown size={16} style={{ flexShrink: 0 }} />
             ) : (
-              <ChevronRight className="h-4 w-4 shrink-0" />
+              <ChevronRight size={16} style={{ flexShrink: 0 }} />
             )}
-            <Users className="h-4 w-4 shrink-0" />
+            <Users size={16} style={{ flexShrink: 0 }} />
             Friend Groups
-            <span className="ml-auto text-xs text-muted-foreground">
+            <span className={s.count}>
               {friendGroups.length}
             </span>
           </button>
 
           {friendGroupsOpen && (
-            <div className="px-2 pb-2">
+            <div className={s.sectionContent}>
               <button
                 onClick={addFriendGroup}
-                className="flex items-center gap-1.5 w-full rounded-md border border-dashed border-border px-2.5 py-1.5 text-xs text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors mb-2"
+                className={s.addGroupBtn}
               >
-                <Plus className="h-3.5 w-3.5" />
+                <Plus size={14} />
                 Add Friend Group
               </button>
 
-              <div className="flex flex-col gap-2 max-h-[300px] overflow-y-auto">
+              <div className={s.groupList}>
                 {friendGroups.map((group, gIndex) => (
                   <FriendGroupCard
                     key={group.id}
@@ -144,29 +139,29 @@ export function RightSidebar() {
           )}
         </div>
 
-        <div className="h-px bg-border" />
+        <div className={s.sectionDivider} />
 
         {/* Student List */}
-        <div className="flex flex-col flex-1 overflow-hidden">
+        <div className={s.studentsSection}>
           <button
             onClick={() => setStudentsOpen(!studentsOpen)}
-            className="flex items-center gap-2 px-3 py-2.5 text-sm font-semibold hover:bg-accent transition-colors text-left"
+            className={s.sectionToggle}
           >
             {studentsOpen ? (
-              <ChevronDown className="h-4 w-4 shrink-0" />
+              <ChevronDown size={16} style={{ flexShrink: 0 }} />
             ) : (
-              <ChevronRight className="h-4 w-4 shrink-0" />
+              <ChevronRight size={16} style={{ flexShrink: 0 }} />
             )}
-            <User className="h-4 w-4 shrink-0" />
+            <User size={16} style={{ flexShrink: 0 }} />
             Students
-            <span className="ml-auto text-xs text-muted-foreground">
+            <span className={s.count}>
               {students.length}
             </span>
           </button>
 
           {studentsOpen && (
-            <div className="flex-1 overflow-y-auto px-2 pb-2">
-              <div className="flex flex-col gap-0.5">
+            <div className={s.studentList}>
+              <div className={s.studentListInner}>
                 {students.map((student) => {
                   const status = getStudentStatus(student.id);
                   return (
@@ -174,9 +169,9 @@ export function RightSidebar() {
                       key={student.id}
                       draggable
                       onDragStart={(e) => handleDragStart(e, student.id)}
-                      className={`flex items-center gap-1.5 rounded-md border px-2 py-1.5 text-xs cursor-grab active:cursor-grabbing ${statusColors[status]}`}
+                      className={`${s.studentCard} ${s[status]}`}
                     >
-                      <GripVertical className="h-3 w-3 shrink-0 opacity-40" />
+                      <GripVertical size={12} style={{ flexShrink: 0, opacity: 0.4 }} />
                       {editingStudent === student.id ? (
                         <input
                           type="text"
@@ -187,18 +182,18 @@ export function RightSidebar() {
                             if (e.key === "Enter") handleFinishEdit(student.id);
                             if (e.key === "Escape") setEditingStudent(null);
                           }}
-                          className="flex-1 bg-transparent border-none outline-none text-xs min-w-0"
+                          className={s.editInput}
                           autoFocus
                         />
                       ) : (
-                        <span className="flex-1 truncate">{student.name}</span>
+                        <span className={s.studentName}>{student.name}</span>
                       )}
                       <button
                         onClick={() => handleStartEdit(student.id, student.name)}
-                        className="shrink-0 opacity-50 hover:opacity-100 transition-opacity"
+                        className={s.editBtn}
                         title="Rename student"
                       >
-                        <Pencil className="h-3 w-3" />
+                        <Pencil size={12} />
                       </button>
                     </div>
                   );
@@ -233,36 +228,33 @@ function FriendGroupCard({
   const [addingStudent, setAddingStudent] = useState(false);
 
   const availableStudents = students.filter(
-    (s) => !getStudentGroup(s.id)
+    (st) => !getStudentGroup(st.id)
   );
 
   return (
-    <div className="rounded-lg border border-border bg-background p-2">
-      <div className="flex items-center justify-between mb-1.5">
-        <span className="text-xs font-semibold">Group {index + 1}</span>
+    <div className={s.groupCard}>
+      <div className={s.groupHeader}>
+        <span className={s.groupTitle}>Group {index + 1}</span>
         <button
           onClick={() => onRemoveGroup(group.id)}
-          className="text-muted-foreground hover:text-destructive transition-colors"
+          className={s.iconBtn}
           title="Remove group"
         >
-          <X className="h-3.5 w-3.5" />
+          <X size={14} />
         </button>
       </div>
 
-      <div className="flex flex-col gap-0.5 mb-1.5">
+      <div className={s.groupMembers}>
         {group.studentIds.map((sid) => {
-          const student = students.find((s) => s.id === sid);
+          const student = students.find((st) => st.id === sid);
           return (
-            <div
-              key={sid}
-              className="flex items-center justify-between rounded px-1.5 py-1 text-xs bg-accent"
-            >
-              <span className="truncate">{student?.name || "Unknown"}</span>
+            <div key={sid} className={s.memberRow}>
+              <span className={s.memberName}>{student?.name || "Unknown"}</span>
               <button
                 onClick={() => onRemoveStudent(group.id, sid)}
-                className="shrink-0 text-muted-foreground hover:text-destructive transition-colors"
+                className={s.iconBtn}
               >
-                <X className="h-3 w-3" />
+                <X size={12} />
               </button>
             </div>
           );
@@ -273,7 +265,7 @@ function FriendGroupCard({
         <>
           {addingStudent ? (
             <select
-              className="w-full rounded border border-input bg-background px-1.5 py-1 text-xs outline-none focus:ring-1 focus:ring-ring"
+              className={s.addStudentSelect}
               onChange={(e) => {
                 if (e.target.value) {
                   onAddStudent(group.id, e.target.value);
@@ -284,18 +276,18 @@ function FriendGroupCard({
               autoFocus
             >
               <option value="">Select a student...</option>
-              {availableStudents.map((s) => (
-                <option key={s.id} value={s.id}>
-                  {s.name}
+              {availableStudents.map((st) => (
+                <option key={st.id} value={st.id}>
+                  {st.name}
                 </option>
               ))}
             </select>
           ) : (
             <button
               onClick={() => setAddingStudent(true)}
-              className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
+              className={s.addStudentBtn}
             >
-              <Plus className="h-3 w-3" />
+              <Plus size={12} />
               Add Student
             </button>
           )}

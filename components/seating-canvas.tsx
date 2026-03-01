@@ -1,6 +1,7 @@
 import { useRef, useState, useCallback, useEffect } from "react";
 import { useSeatingStore } from "@/lib/store";
 import type { Table, Seat } from "@/lib/types";
+import s from "./seating-canvas.module.css";
 
 const SEAT_W = 72;
 const SEAT_H = 64;
@@ -526,7 +527,7 @@ export function SeatingCanvas() {
       if (mouseDownHitRef.current?.type === "seat" && hasMovedRef.current) {
         const hit = mouseDownHitRef.current;
         const table = tablesRef.current.find((t) => t.id === hit.tableId);
-        const seat = table?.seats.find((s) => s.id === hit.seatId);
+        const seat = table?.seats.find((seat) => seat.id === hit.seatId);
         if (seat?.studentId && !isDraggingSeatRef.current) {
           isDraggingSeatRef.current = true;
           dragSeatStudentIdRef.current = seat.studentId;
@@ -564,7 +565,7 @@ export function SeatingCanvas() {
 
           if (hit?.type === "seat" && hit.seatId && hit.seatId !== dragSeatSourceIdRef.current) {
             const table = tablesRef.current.find((t) => t.id === hit.tableId);
-            const targetSeat = table?.seats.find((s) => s.id === hit.seatId);
+            const targetSeat = table?.seats.find((seat) => seat.id === hit.seatId);
             if (targetSeat && !targetSeat.locked) {
               if (targetSeat.studentId) {
                 swapSeats(dragSeatSourceIdRef.current, targetSeat.id);
@@ -699,7 +700,7 @@ export function SeatingCanvas() {
 
       if (hit?.type === "seat" && hit.seatId) {
         const table = tablesRef.current.find((t) => t.id === hit.tableId);
-        const seat = table?.seats.find((s) => s.id === hit.seatId);
+        const seat = table?.seats.find((seat) => seat.id === hit.seatId);
         if (seat && !seat.locked) {
           assignStudentToSeat(studentId, seat.id);
         }
@@ -728,7 +729,7 @@ export function SeatingCanvas() {
   return (
     <div
       ref={containerRef}
-      className="flex-1 bg-muted relative overflow-hidden"
+      className={s.container}
       onDragOver={handleDragOver}
       onDrop={handleDrop}
     >
@@ -751,17 +752,17 @@ export function SeatingCanvas() {
       />
 
       {/* Zoom controls */}
-      <div className="absolute bottom-4 left-4 flex items-center gap-1 bg-card border border-border rounded-lg shadow-sm px-2 py-1">
+      <div className={s.zoomControls}>
         <button
           onClick={() => {
             scaleRef.current = Math.min(3, scaleRef.current * 1.2);
             setScaleDisplay(scaleRef.current);
           }}
-          className="text-xs font-medium px-2 py-1 hover:bg-accent rounded transition-colors"
+          className={s.zoomBtn}
         >
           +
         </button>
-        <span className="text-xs text-muted-foreground min-w-[40px] text-center">
+        <span className={s.zoomLabel}>
           {Math.round(scaleDisplay * 100)}%
         </span>
         <button
@@ -769,7 +770,7 @@ export function SeatingCanvas() {
             scaleRef.current = Math.max(0.2, scaleRef.current / 1.2);
             setScaleDisplay(scaleRef.current);
           }}
-          className="text-xs font-medium px-2 py-1 hover:bg-accent rounded transition-colors"
+          className={s.zoomBtn}
         >
           -
         </button>
@@ -778,36 +779,36 @@ export function SeatingCanvas() {
       {/* Context menu */}
       {contextMenu && (
         <div
-          className="fixed bg-popover border border-border rounded-lg shadow-lg py-1 z-50 text-sm min-w-[160px]"
+          className={s.contextMenu}
           style={{ left: contextMenu.x, top: contextMenu.y }}
         >
           <button
-            className="w-full text-left px-3 py-1.5 hover:bg-accent text-popover-foreground transition-colors"
+            className={s.menuItem}
             onClick={() => handleContextAction("lock", contextMenu.tableId)}
           >
             Lock all seats
           </button>
           <button
-            className="w-full text-left px-3 py-1.5 hover:bg-accent text-popover-foreground transition-colors"
+            className={s.menuItem}
             onClick={() => handleContextAction("unlock", contextMenu.tableId)}
           >
             Unlock all seats
           </button>
-          <div className="h-px bg-border my-1" />
+          <div className={s.menuDivider} />
           <button
-            className="w-full text-left px-3 py-1.5 hover:bg-accent text-popover-foreground transition-colors"
+            className={s.menuItem}
             onClick={() => handleContextAction("rename", contextMenu.tableId)}
           >
             Rename table
           </button>
           <button
-            className="w-full text-left px-3 py-1.5 hover:bg-accent text-popover-foreground transition-colors"
+            className={s.menuItem}
             onClick={() => handleContextAction("capacity", contextMenu.tableId)}
           >
             Edit capacity
           </button>
           <button
-            className="w-full text-left px-3 py-1.5 hover:bg-destructive hover:text-white text-destructive transition-colors"
+            className={s.menuDanger}
             onClick={() => handleContextAction("remove", contextMenu.tableId)}
           >
             Remove table

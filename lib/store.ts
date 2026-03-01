@@ -32,7 +32,6 @@ function createSeats(capacity: number): Seat[] {
 interface SeatingChartStore extends ChartState {
   // Chart metadata
   setName: (name: string) => void;
-  setTeacher: (teacher: string) => void;
 
   // Students
   addStudentsFromRoster: (names: string[]) => void;
@@ -72,9 +71,6 @@ interface SeatingChartStore extends ChartState {
 
   // Helpers
   getStudentById: (id: string) => Student | undefined;
-  getSeatById: (seatId: string) => { seat: Seat; table: Table } | undefined;
-  getStudentSeat: (studentId: string) => { seat: Seat; table: Table } | undefined;
-  isStudentInGroup: (studentId: string) => boolean;
   getStudentGroup: (studentId: string) => FriendGroup | undefined;
 }
 
@@ -86,7 +82,6 @@ export const useSeatingStore = create<SeatingChartStore>((set, get) => ({
   friendGroups: [],
 
   setName: (name) => set({ name }),
-  setTeacher: (teacher) => set({ teacher }),
 
   addStudentsFromRoster: (names) => {
     const newStudents: Student[] = names
@@ -568,28 +563,6 @@ export const useSeatingStore = create<SeatingChartStore>((set, get) => ({
 
   getStudentById: (id) => {
     return get().students.find((s) => s.id === id);
-  },
-
-  getSeatById: (seatId) => {
-    for (const t of get().tables) {
-      for (const s of t.seats) {
-        if (s.id === seatId) return { seat: s, table: t };
-      }
-    }
-    return undefined;
-  },
-
-  getStudentSeat: (studentId) => {
-    for (const t of get().tables) {
-      for (const s of t.seats) {
-        if (s.studentId === studentId) return { seat: s, table: t };
-      }
-    }
-    return undefined;
-  },
-
-  isStudentInGroup: (studentId) => {
-    return get().friendGroups.some((g) => g.studentIds.includes(studentId));
   },
 
   getStudentGroup: (studentId) => {
