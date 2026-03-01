@@ -9,7 +9,7 @@ import {
   RotateCcw,
   Save,
   Upload,
-} from "lucide-react";
+} from "@/components/icons";
 
 export function TopBar() {
   const {

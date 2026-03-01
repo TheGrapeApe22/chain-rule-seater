@@ -9,7 +9,7 @@ import {
   Users,
   User,
   GripVertical,
-} from "lucide-react";
+} from "@/components/icons";
 
 export function RightSidebar() {
   const {
