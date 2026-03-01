@@ -9,7 +9,8 @@ import {
   RotateCcw,
   Save,
   Upload,
-} from "lucide-react";
+} from "@/components/icons";
+import s from "./top-bar.module.css";
 
 export function TopBar() {
   const {
@@ -108,88 +109,56 @@ export function TopBar() {
   };
 
   return (
-    <div className="flex items-center gap-2 border-b border-border bg-card px-3 py-2 text-card-foreground shrink-0 overflow-x-auto">
+    <div className={s.bar}>
       <input
         type="text"
         value={name}
         onChange={(e) => setName(e.target.value)}
-        className="bg-transparent text-sm font-semibold border-none outline-none min-w-[120px] max-w-[200px] focus:ring-1 focus:ring-ring rounded px-1 py-0.5"
+        className={s.nameInput}
         aria-label="Chart name"
       />
 
-      <div className="h-5 w-px bg-border mx-1" />
+      <div className={s.divider} />
 
-      <button
-        onClick={openAddDialog}
-        className="flex items-center gap-1.5 rounded-md bg-primary px-2.5 py-1.5 text-xs font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
-        title="Add tables"
-      >
-        <Plus className="h-3.5 w-3.5" />
+      <button onClick={openAddDialog} className={s.primaryBtn} title="Add tables">
+        <Plus size={14} />
         Add Tables
       </button>
 
-      <button
-        onClick={lockAllSeats}
-        className="flex items-center gap-1.5 rounded-md bg-secondary px-2.5 py-1.5 text-xs font-medium text-secondary-foreground hover:bg-secondary/80 transition-colors"
-        title="Lock all seats"
-      >
-        <Lock className="h-3.5 w-3.5" />
+      <button onClick={lockAllSeats} className={s.secondaryBtn} title="Lock all seats">
+        <Lock size={14} />
         Lock All
       </button>
 
-      <button
-        onClick={unlockAllSeats}
-        className="flex items-center gap-1.5 rounded-md bg-secondary px-2.5 py-1.5 text-xs font-medium text-secondary-foreground hover:bg-secondary/80 transition-colors"
-        title="Unlock all seats"
-      >
-        <Unlock className="h-3.5 w-3.5" />
+      <button onClick={unlockAllSeats} className={s.secondaryBtn} title="Unlock all seats">
+        <Unlock size={14} />
         Unlock All
       </button>
 
-      <button
-        onClick={randomFill}
-        className="flex items-center gap-1.5 rounded-md bg-secondary px-2.5 py-1.5 text-xs font-medium text-secondary-foreground hover:bg-secondary/80 transition-colors"
-        title="Randomize unlocked seats"
-      >
-        <Shuffle className="h-3.5 w-3.5" />
+      <button onClick={randomFill} className={s.secondaryBtn} title="Randomize unlocked seats">
+        <Shuffle size={14} />
         Randomize
       </button>
 
-      <button
-        onClick={clearUnlockedSeats}
-        className="flex items-center gap-1.5 rounded-md bg-secondary px-2.5 py-1.5 text-xs font-medium text-secondary-foreground hover:bg-secondary/80 transition-colors"
-        title="Clear all unlocked seats"
-      >
-        <Eraser className="h-3.5 w-3.5" />
+      <button onClick={clearUnlockedSeats} className={s.secondaryBtn} title="Clear all unlocked seats">
+        <Eraser size={14} />
         Clear
       </button>
 
-      <div className="flex-1" />
+      <div className={s.spacer} />
 
-      <button
-        onClick={handleResetRoster}
-        className="flex items-center gap-1.5 rounded-md bg-secondary px-2.5 py-1.5 text-xs font-medium text-secondary-foreground hover:bg-secondary/80 transition-colors"
-        title="Reset roster"
-      >
-        <RotateCcw className="h-3.5 w-3.5" />
+      <button onClick={handleResetRoster} className={s.secondaryBtn} title="Reset roster">
+        <RotateCcw size={14} />
         Reset Roster
       </button>
 
-      <button
-        onClick={handleSave}
-        className="flex items-center gap-1.5 rounded-md bg-secondary px-2.5 py-1.5 text-xs font-medium text-secondary-foreground hover:bg-secondary/80 transition-colors"
-        title="Save to JSON"
-      >
-        <Save className="h-3.5 w-3.5" />
+      <button onClick={handleSave} className={s.secondaryBtn} title="Save to JSON">
+        <Save size={14} />
         Save
       </button>
 
-      <button
-        onClick={handleLoad}
-        className="flex items-center gap-1.5 rounded-md bg-secondary px-2.5 py-1.5 text-xs font-medium text-secondary-foreground hover:bg-secondary/80 transition-colors"
-        title="Load from JSON"
-      >
-        <Upload className="h-3.5 w-3.5" />
+      <button onClick={handleLoad} className={s.secondaryBtn} title="Load from JSON">
+        <Upload size={14} />
         Load
       </button>
 
@@ -197,7 +166,7 @@ export function TopBar() {
         ref={fileInputRef}
         type="file"
         accept=".json"
-        className="hidden"
+        className={s.hidden}
         onChange={handleFileChange}
       />
 
@@ -205,21 +174,21 @@ export function TopBar() {
         ref={rosterInputRef}
         type="file"
         accept=".txt,.csv,.text"
-        className="hidden"
+        className={s.hidden}
         onChange={handleRosterFileChange}
       />
 
       {showAddDialog && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+          className={s.overlay}
           onClick={() => setShowAddDialog(false)}
         >
           <div
-            className="bg-card text-card-foreground border border-border rounded-lg shadow-lg p-5 w-[320px]"
+            className={s.dialog}
             onClick={(e) => e.stopPropagation()}
           >
-            <h3 className="text-sm font-semibold mb-4">Add Tables</h3>
-            <div className="flex items-center gap-2 text-sm">
+            <h3 className={s.dialogTitle}>Add Tables</h3>
+            <div className={s.dialogForm}>
               <span>Add</span>
               <input
                 type="number"
@@ -229,7 +198,7 @@ export function TopBar() {
                 onChange={(e) =>
                   setTableCount(Math.max(1, parseInt(e.target.value) || 1))
                 }
-                className="w-14 rounded-md border border-border bg-background px-2 py-1 text-sm text-foreground text-center focus:outline-none focus:ring-1 focus:ring-ring"
+                className={s.dialogInput}
                 autoFocus
               />
               <span>{"table(s) of size"}</span>
@@ -243,19 +212,19 @@ export function TopBar() {
                     Math.min(6, Math.max(2, parseInt(e.target.value) || 2))
                   )
                 }
-                className="w-14 rounded-md border border-border bg-background px-2 py-1 text-sm text-foreground text-center focus:outline-none focus:ring-1 focus:ring-ring"
+                className={s.dialogInput}
               />
             </div>
-            <div className="flex justify-end gap-2 mt-5">
+            <div className={s.dialogActions}>
               <button
                 onClick={() => setShowAddDialog(false)}
-                className="rounded-md bg-secondary px-3 py-1.5 text-xs font-medium text-secondary-foreground hover:bg-secondary/80 transition-colors"
+                className={s.secondaryBtn}
               >
                 Cancel
               </button>
               <button
                 onClick={confirmAddTables}
-                className="rounded-md bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
+                className={s.primaryBtn}
               >
                 Add
               </button>

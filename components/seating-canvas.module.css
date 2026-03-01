@@ -1,0 +1,91 @@
+.container {
+  flex: 1;
+  background-color: var(--muted);
+  position: relative;
+  overflow: hidden;
+}
+
+.zoomControls {
+  position: absolute;
+  bottom: 1rem;
+  left: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  padding: 0.25rem 0.5rem;
+}
+
+.zoomBtn {
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: inherit;
+  transition: background-color 150ms;
+}
+.zoomBtn:hover {
+  background-color: var(--accent);
+}
+
+.zoomLabel {
+  font-size: 0.75rem;
+  color: var(--muted-foreground);
+  min-width: 40px;
+  text-align: center;
+}
+
+.contextMenu {
+  position: fixed;
+  background-color: var(--popover);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  padding: 0.25rem 0;
+  z-index: 50;
+  font-size: 0.875rem;
+  min-width: 160px;
+}
+
+.menuItem {
+  width: 100%;
+  text-align: left;
+  padding: 0.375rem 0.75rem;
+  color: var(--popover-foreground);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: inherit;
+  transition: background-color 150ms;
+}
+.menuItem:hover {
+  background-color: var(--accent);
+}
+
+.menuDivider {
+  height: 1px;
+  background-color: var(--border);
+  margin: 0.25rem 0;
+}
+
+.menuDanger {
+  width: 100%;
+  text-align: left;
+  padding: 0.375rem 0.75rem;
+  color: var(--destructive);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: inherit;
+  transition: background-color 150ms, color 150ms;
+}
+.menuDanger:hover {
+  background-color: var(--destructive);
+  color: white;
+}
