@@ -1,5 +1,3 @@
-"use client";
-
 import { useRef, useState, useCallback, useEffect } from "react";
 import { useSeatingStore } from "@/lib/store";
 import type { Table, Seat } from "@/lib/types";

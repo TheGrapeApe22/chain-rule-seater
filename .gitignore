@@ -11,3 +11,5 @@ node_modules/
 
 test-data
 next-env.d.ts
+
+dist/
