@@ -563,7 +563,9 @@ export function SeatingCanvas() {
           const world = screenToWorld(mx, my);
           const hit = hitTest(world.x, world.y, tablesRef.current);
 
-          if (hit?.type === "seat" && hit.seatId && hit.seatId !== dragSeatSourceIdRef.current) {
+          if (hit?.type === "seat" && hit.seatId === dragSeatSourceIdRef.current) {
+            // Dropped back onto the source seat: keep assignment as-is
+          } else if (hit?.type === "seat" && hit.seatId && hit.seatId !== dragSeatSourceIdRef.current) {
             const table = tablesRef.current.find((t) => t.id === hit.tableId);
             const targetSeat = table?.seats.find((seat) => seat.id === hit.seatId);
             if (targetSeat && !targetSeat.locked) {
