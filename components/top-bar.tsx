@@ -125,6 +125,11 @@ export function TopBar() {
 
       <div className={s.divider} />
 
+      <button onClick={handleResetRoster} className={s.secondaryBtn} title="Set roster">
+        <RotateCcw size={14} />
+        Set Roster
+      </button>
+
       <button onClick={openAddDialog} className={s.primaryBtn} title="Add tables">
         <Plus size={14} />
         Add Tables
@@ -151,11 +156,6 @@ export function TopBar() {
       </button>
 
       <div className={s.spacer} />
-
-      <button onClick={handleResetRoster} className={s.secondaryBtn} title="Reset roster">
-        <RotateCcw size={14} />
-        Reset Roster
-      </button>
 
       <button onClick={handleSave} className={s.secondaryBtn} title="Save to JSON">
         <Save size={14} />
